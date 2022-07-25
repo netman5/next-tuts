@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import MeetupList from '../components/meetups/MeetupList'
 const meetups = [
   {
@@ -18,14 +17,35 @@ const meetups = [
   }
 ];
 
-const HomePage = () => {
-  const [loadedMeetups, setLoadedMeetups] = useState([])
+const HomePage = (props) => {
 
-  useEffect(() => {
-    setLoadedMeetups(meetups)
-  }, [])
+  return <MeetupList meetups={props.meetups} />
+}
 
-  return <MeetupList meetups={loadedMeetups} />
+// export async function getServerSideProps(context) {
+//   // Fetch data from external API
+//   // Perform necessary logic for credentials that sholud be exposed to the client
+//   // Use this when you need access to req, res, or next
+//   const req = context.req
+//   const res = context.res
+
+//   return {
+//     props: {
+//       meetups
+//     }
+//   }
+// }
+
+export async function getStaticProps() {
+  // Fetch data from external API
+  // Read data from any file system
+  // Possible problem here is the data might not be upto date
+  return {
+    props: {
+      meetups
+    },
+    revalidate: 1 // Make sure the data is fetched again if it's changed & not older than 1 second
+  }
 }
 
 export default HomePage
