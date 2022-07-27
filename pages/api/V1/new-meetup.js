@@ -3,18 +3,22 @@ import { MongoClient } from 'mongodb';
 
 
 // Post request to create a new meetup
-function handler(req, res) {
+async function handler(req, res) {
   if (req.method === 'POST') {
-    const { title, address, description } = req.body;
-    const meetup = {
-      title,
-      address,
-      description,
-      image
-    };
+    // const { title, address, description, image } = req.body;
+    // const meetup = {
+    //   title,
+    //   address,
+    //   description,
+    //   image
+    // };
+    const meetup = req.body;
 
-    MongoClient.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@api-db.ofcj2.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
-    meetups.push(meetup);
-    res.status(201).json(meetup);
+    const client = await MongoClient.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@api-db.ofcj2.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
+    const db = client.db();
+    const meetups = db.collection('meetups');
+    const result = await meetups.insertOne(meetup);
+    client.close();
+    res.status(201).json({message: 'Meetup created successfully', result});
   }
 }
