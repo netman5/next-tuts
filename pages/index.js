@@ -1,21 +1,6 @@
-import MeetupList from '../components/meetups/MeetupList'
-const meetups = [
-  {
-    id: 'm1',
-    title: 'Meetup 1',
-    image: 'https://source.unsplash.com/random',
-    address: '123 Main St',
-    description: 'This is a description',
-  },
+import { MongoClient } from 'mongodb';
 
-  {
-    id: 'm2',
-    title: 'Meetup 1',
-    image: 'https://source.unsplash.com/random',
-    address: '123 Main St',
-    description: 'This is a description',
-  }
-];
+import MeetupList from '../components/meetups/MeetupList';
 
 const HomePage = (props) => {
 
@@ -40,9 +25,21 @@ export async function getStaticProps() {
   // Fetch data from external API
   // Read data from any file system
   // Possible problem here is the data might not be upto date
+  const client = await MongoClient.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@api-db.ofcj2.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
+  const db = client.db();
+  const meetupCollections = db.collection('meetups');
+  const meetups = await meetupCollections.find({}).toArray();
+
+  client.close();
+
   return {
     props: {
-      meetups
+      meetups: meetups.map(meetup => ({
+        title: meetup.title,
+        image: meetup.image,
+        address: meetup.address,
+        id: meetup._id.toString(),
+      }))
     },
     revalidate: 1 // Make sure the data is fetched again if it's changed & not older than 1 second
   }
