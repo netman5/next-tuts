@@ -1,4 +1,5 @@
-import { MongoClient, ObjectId } from "mongodb";
+import { ObjectId } from "mongodb";
+import connectToDB from "../../components/dbConnect";
 import MeetupDetail from "../../components/meetups/MeetupDetails";
 
 const MeetupDetails = (props) => {
@@ -19,7 +20,7 @@ export async function getStaticPaths() {
   // It is only used with getStaticProps
   // it is needed in a dynamic generate pages
 
-  const client = await MongoClient.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@api-db.ofcj2.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
+  const client = await connectToDB();
   const db = client.db();
   const meetupCollections = db.collection('meetups');
   const meetups = await meetupCollections.find({}, {_id: 1}).toArray();
@@ -38,7 +39,7 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
   // fetch data for a single meetup
   const meetupId = context.params.meetupId;
-  const client = await MongoClient.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@api-db.ofcj2.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
+  const client = await connectToDB();
   const db = client.db();
   const meetupCollections = db.collection('meetups');
   const meetup = await meetupCollections.findOne({ _id: ObjectId(meetupId) });

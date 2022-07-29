@@ -10,7 +10,7 @@ async function handler(req, res) {
     const db = client.db();
     const meetups = db.collection('meetups');
     const result = await meetups.insertOne(meetup);
-    console.log(result);
+
     client.close();
     res.status(201).json({message: 'Meetup created successfully', result});
   }
