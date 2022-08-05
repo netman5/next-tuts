@@ -1,5 +1,5 @@
-import { MongoClient } from 'mongodb';
-
+// import { MongoClient } from 'mongodb';
+import connectToDB from '../components/dbConnect';
 import MeetupList from '../components/meetups/MeetupList';
 
 const HomePage = (props) => {
@@ -25,7 +25,7 @@ export async function getStaticProps() {
   // Fetch data from external API
   // Read data from any file system
   // Possible problem here is the data might not be upto date
-  const client = await MongoClient.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@api-db.ofcj2.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
+  const client = await connectToDB();
   const db = client.db();
   const meetupCollections = db.collection('meetups');
   const meetups = await meetupCollections.find({}).toArray();
