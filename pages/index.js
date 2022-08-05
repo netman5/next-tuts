@@ -1,10 +1,19 @@
-// import { MongoClient } from 'mongodb';
+import { Fragment } from 'react';
+import Head from 'next/head';
 import connectToDB from '../components/dbConnect';
 import MeetupList from '../components/meetups/MeetupList';
-
 const HomePage = (props) => {
 
-  return <MeetupList meetups={props.meetups} />
+  return(
+    <Fragment>
+      <Head>
+        <title>Meetup Homepage</title>
+        <meta name="description" content="Browse and add new list of meetups" />
+      </Head>
+      <MeetupList meetups={props.meetups} />
+    </Fragment>
+  )
+
 }
 
 // export async function getServerSideProps(context) {
